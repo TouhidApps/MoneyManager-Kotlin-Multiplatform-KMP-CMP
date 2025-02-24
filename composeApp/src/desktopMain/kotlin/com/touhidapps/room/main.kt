@@ -15,7 +15,7 @@ import org.koin.mp.KoinPlatformTools
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        title = "KMP-Room-MVVM",
+        title = "MoneyManager",
     ) {
 
 
