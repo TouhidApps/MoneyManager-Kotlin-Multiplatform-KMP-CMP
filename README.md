@@ -8,8 +8,8 @@
 ![Android_Screenshot](https://raw.githubusercontent.com/TouhidApps/MoneyManager-KMP-Room-Koin-MVVM/refs/heads/main/screenshots/ss_android.png)
 
 ### iOS:
-![Android_Screenshot](https://raw.githubusercontent.com/TouhidApps/MoneyManager-KMP-Room-Koin-MVVM/refs/heads/main/screenshots/ss_ios.png)
+![iOS_Screenshot](https://raw.githubusercontent.com/TouhidApps/MoneyManager-KMP-Room-Koin-MVVM/refs/heads/main/screenshots/ss_ios_u.png)
 
 ### Desktop:
-![Android_Screenshot](https://raw.githubusercontent.com/TouhidApps/MoneyManager-KMP-Room-Koin-MVVM/refs/heads/main/screenshots/ss_desktop.png)
+![Desktop_Screenshot](https://raw.githubusercontent.com/TouhidApps/MoneyManager-KMP-Room-Koin-MVVM/refs/heads/main/screenshots/ss_desktop_u.png)
 
