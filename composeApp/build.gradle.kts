@@ -1,8 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -34,6 +32,7 @@ kotlin {
             isStatic = true
         }
     }
+
     
     jvm("desktop")
     
@@ -70,7 +69,13 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+
+            /**
+             * Use latest material3 library to avoid datetime library conflict with dateTimePickerState
+             */
+//            implementation(compose.material3)
+            implementation("org.jetbrains.compose.material3:material3:1.10.0-alpha01")
+
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -85,6 +90,10 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
 
             implementation(libs.lifecycle.viewmodel)
+            implementation(compose.materialIconsExtended)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+
 
         }
         desktopMain.dependencies {
@@ -131,6 +140,7 @@ dependencies {
     add("kspIosX64", libs.androidx.room.compiler) // Intel-based iOS Simulators
     add("kspIosArm64", libs.androidx.room.compiler) // Real iOS Devices
     add("kspDesktop", libs.androidx.room.compiler) // jvm
+
 
 }
 
