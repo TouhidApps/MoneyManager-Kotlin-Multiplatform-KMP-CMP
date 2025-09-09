@@ -1,4 +1,4 @@
-# Money Manager App with Kotlin Multiplatform Compose (KMP, CMP, ROOM DB, Koin, MVVM)
+# Money Manager App (ROOM BD) with Kotlin Multiplatform Compose (KMP, CMP, ROOM, Koin, MVI, Clean Architecture)
 
 ## Platforms: Android | iOS | Desktop
 
