@@ -15,6 +15,9 @@ plugins {
 }
 
 kotlin {
+
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes") // avoid compilation warning on expect/actual classes
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {

@@ -1,9 +1,11 @@
-package com.touhidapps.room.ae
+package com.touhidapps.room.db
 
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.touhidapps.room.data.datasource.local.db.AppDatabase
+import com.touhidapps.room.data.datasource.local.db.dbFileName
 import kotlinx.coroutines.Dispatchers
 
 object DbFactoryAndroid: RoomDatabaseConstructor<AppDatabase> {

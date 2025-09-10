@@ -1,6 +1,6 @@
 package com.touhidapps.room.di
 
-import com.touhidapps.room.ae.AppDatabase
+import com.touhidapps.room.data.datasource.local.db.AppDatabase
 import com.touhidapps.room.domain.repo.TransactionRepository
 import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase

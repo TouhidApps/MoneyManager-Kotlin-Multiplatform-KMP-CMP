@@ -1,7 +1,7 @@
 package com.touhidapps.room.di
 
-import com.touhidapps.room.ae.AppDatabase
-import com.touhidapps.room.ae.DbFactoryAndroid
+import com.touhidapps.room.data.datasource.local.db.AppDatabase
+import com.touhidapps.room.db.DbFactoryAndroid
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

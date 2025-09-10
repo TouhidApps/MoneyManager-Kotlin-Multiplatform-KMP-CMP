@@ -1,6 +1,4 @@
-@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-
-package com.touhidapps.room.ae
+package com.touhidapps.room.data.datasource.local.db
 
 import androidx.room.RoomDatabaseConstructor
 

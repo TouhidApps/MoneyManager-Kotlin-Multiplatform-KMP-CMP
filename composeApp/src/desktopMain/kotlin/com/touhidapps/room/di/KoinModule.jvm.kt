@@ -1,7 +1,7 @@
 package com.touhidapps.room.di
 
-import com.touhidapps.room.ae.AppDatabase
-import com.touhidapps.room.ae.DbFactoryJvm
+import com.touhidapps.room.data.datasource.local.db.AppDatabase
+import com.touhidapps.room.db.DbFactoryJvm
 import org.koin.dsl.module
 
 val dbModuleJvm = module {
