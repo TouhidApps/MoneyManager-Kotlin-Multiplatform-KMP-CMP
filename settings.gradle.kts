@@ -1,4 +1,4 @@
-rootProject.name = "MoneyManager-KMP-Room-Koin-MVVM"
+rootProject.name = "MoneyManager-Kotlin-Multiplatform-KMP-CMP"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
