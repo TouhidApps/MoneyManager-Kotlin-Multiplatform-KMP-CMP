@@ -92,7 +92,6 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
-            implementation(libs.lifecycle.viewmodel)
             implementation(compose.materialIconsExtended)
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")

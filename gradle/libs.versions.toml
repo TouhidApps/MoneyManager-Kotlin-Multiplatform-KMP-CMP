@@ -17,7 +17,7 @@ kotlin = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 
 room = "2.8.0"
-ksp = "2.2.20-RC2-2.0.2" # make sure it is compatable with kotlin version
+ksp = "2.2.20-2.0.2" # make sure it is compatable with kotlin version
 sqlite = "2.6.0"
 koin = "4.1.1"
 lifecycleViewModel = "2.9.3"
@@ -45,9 +45,6 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
-
-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewModel" }
-
 
 
 [plugins]
