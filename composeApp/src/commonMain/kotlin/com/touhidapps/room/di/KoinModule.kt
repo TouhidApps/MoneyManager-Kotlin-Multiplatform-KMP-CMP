@@ -6,7 +6,7 @@ import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
 import com.touhidapps.room.presentation.common.SharedContract
-import com.touhidapps.room.repo.TransactionRepositoryImpl
+import com.touhidapps.room.data.repo.TransactionRepositoryImpl
 import com.touhidapps.room.presentation.common.SharedViewModel
 import com.touhidapps.room.presentation.home.HomeContract
 import com.touhidapps.room.presentation.home.TransactionViewModel
