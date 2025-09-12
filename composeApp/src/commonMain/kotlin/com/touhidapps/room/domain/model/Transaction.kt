@@ -1,7 +1,7 @@
 package com.touhidapps.room.domain.model
 
 
-data class MyTransaction(
+data class Transaction(
     val id: Int = 0,
     val title: String = "",
     val amount: Double = 0.0,

@@ -35,7 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.touhidapps.room.domain.model.MyTransaction
+import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.presentation.common.SharedContract
 import com.touhidapps.room.presentation.common.SharedViewModel
 import com.touhidapps.room.presentation.home.HomeScreen
@@ -108,9 +108,9 @@ fun App(sharedContract: SharedContract = koinViewModel<SharedViewModel>()) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TransactionList(
-    items: List<MyTransaction>,
-    onEdit: (MyTransaction) -> Unit,
-    onDelete: (MyTransaction) -> Unit
+    items: List<Transaction>,
+    onEdit: (Transaction) -> Unit,
+    onDelete: (Transaction) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()

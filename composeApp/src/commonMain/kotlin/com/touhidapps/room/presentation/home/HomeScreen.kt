@@ -48,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.touhidapps.room.TransactionList
-import com.touhidapps.room.data.datasource.local.db.dao.MyTransactionDao
-import com.touhidapps.room.data.datasource.local.db.entity.MyTransactionEntity
-import com.touhidapps.room.domain.model.MyTransaction
+import com.touhidapps.room.data.datasource.local.db.dao.TransactionDao
+import com.touhidapps.room.data.datasource.local.db.entity.TransactionEntity
+import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
@@ -79,7 +79,7 @@ fun HomeScreen(
     // The dialog is purely a UI concern.
     // It doesn’t belong to your domain/business logic — the user can cancel anytime without affecting data.
     // so no need to keep it in state
-    var showDeleteDialog by remember { mutableStateOf<MyTransaction?>(null) }
+    var showDeleteDialog by remember { mutableStateOf<Transaction?>(null) }
 
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -356,16 +356,16 @@ fun HomeScreenPreview() {
 
 }
 
-class FakeTransactionDao : MyTransactionDao {
-    override suspend fun upsert(myTransaction: MyTransactionEntity) { /* no-op */ }
+class FakeTransactionDao : TransactionDao {
+    override suspend fun upsert(transaction: TransactionEntity) { /* no-op */ }
 
-    override suspend fun getAllTransaction(): List<MyTransactionEntity> {
+    override suspend fun getAllTransaction(): List<TransactionEntity> {
         return listOf(
-            MyTransactionEntity(id = 1, title = "Salary", amount = 5.0, isIncome = true, transactionTimeStamp = getCurrentTimeMillis(), entryTimeStamp = ""),
-            MyTransactionEntity(id = 2, title = "Groceries", amount = 20.0, isIncome = false, transactionTimeStamp = getCurrentTimeMillis(), entryTimeStamp = "")
+            TransactionEntity(id = 1, title = "Salary", amount = 5.0, isIncome = true, transactionTimeStamp = getCurrentTimeMillis(), entryTimeStamp = ""),
+            TransactionEntity(id = 2, title = "Groceries", amount = 20.0, isIncome = false, transactionTimeStamp = getCurrentTimeMillis(), entryTimeStamp = "")
         )
     }
 
     override suspend fun deleteAll() {}
-    override suspend fun delete(myTransaction: MyTransactionEntity) {}
+    override suspend fun delete(transaction: TransactionEntity) {}
 }

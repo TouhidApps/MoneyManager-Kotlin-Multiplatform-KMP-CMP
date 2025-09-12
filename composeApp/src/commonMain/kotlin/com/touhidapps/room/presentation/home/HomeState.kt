@@ -1,12 +1,12 @@
 package com.touhidapps.room.presentation.home
 
-import com.touhidapps.room.domain.model.MyTransaction
+import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.utils.getCurrentTimeMillis
 
 data class HomeState(
     val isLoading: Boolean = false,
 
-    val transactions: List<MyTransaction> = emptyList(),
+    val transactions: List<Transaction> = emptyList(),
     val upsert: Boolean = false,
     val delete: Boolean = false,
 

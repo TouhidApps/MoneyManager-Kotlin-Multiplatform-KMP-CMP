@@ -4,21 +4,21 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.touhidapps.room.data.datasource.local.db.entity.MyTransactionEntity
+import com.touhidapps.room.data.datasource.local.db.entity.TransactionEntity
 
 @Dao
-interface MyTransactionDao {
+interface TransactionDao {
 
     @Upsert
-    suspend fun upsert(myTransaction: MyTransactionEntity)
+    suspend fun upsert(transaction: TransactionEntity)
 
     @Query("SELECT * FROM MyTransaction ORDER BY transactionTimeStamp ASC")
-    suspend fun getAllTransaction(): List<MyTransactionEntity>
+    suspend fun getAllTransaction(): List<TransactionEntity>
 
     @Query("DELETE FROM MyTransaction")
     suspend fun deleteAll()
 
     @Delete
-    suspend fun delete(myTransaction: MyTransactionEntity)
+    suspend fun delete(transaction: TransactionEntity)
 
 }

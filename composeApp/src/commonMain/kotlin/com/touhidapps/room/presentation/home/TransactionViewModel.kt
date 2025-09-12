@@ -2,7 +2,7 @@ package com.touhidapps.room.presentation.home
 
 import androidx.lifecycle.viewModelScope
 import com.touhidapps.room.base.BaseViewModel
-import com.touhidapps.room.domain.model.MyTransaction
+import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
@@ -39,11 +39,11 @@ class TransactionViewModel(
 
                 _homeState.update {
                     it.copy(
-                        title = event.myTransaction?.title ?: "",
-                        amount = "${event.myTransaction?.amount ?: 0.0}",
-                        itemIdForUpdate = event.myTransaction?.id,
-                        isIncome = event.myTransaction?.isIncome ?: false,
-                        selectedDate = event.myTransaction?.transactionTimeStamp ?: getCurrentTimeMillis(),
+                        title = event.transaction?.title ?: "",
+                        amount = "${event.transaction?.amount ?: 0.0}",
+                        itemIdForUpdate = event.transaction?.id,
+                        isIncome = event.transaction?.isIncome ?: false,
+                        selectedDate = event.transaction?.transactionTimeStamp ?: getCurrentTimeMillis(),
                     )
                 }
 
@@ -91,7 +91,7 @@ class TransactionViewModel(
 
             is HomeEvents.ItemDeleteYes -> {
 
-                deleteTransaction(event.myTransaction)
+                deleteTransaction(event.transaction)
 
             }
 
@@ -116,7 +116,7 @@ class TransactionViewModel(
                 }
             }
 
-            val transaction = MyTransaction(
+            val transaction = Transaction(
                 id = _homeState.value.itemIdForUpdate ?: 0, // 0 means insert, Room will autogenerate
                 title = _homeState.value.title ?: "",
                 amount = _homeState.value.amount?.toDouble() ?: 0.0,
@@ -152,7 +152,7 @@ class TransactionViewModel(
     }
 
 
-    private fun deleteTransaction(transaction: MyTransaction?) {
+    private fun deleteTransaction(transaction: Transaction?) {
 
         viewModelScope.launch {
 

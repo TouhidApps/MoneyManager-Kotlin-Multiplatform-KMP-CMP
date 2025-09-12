@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "MyTransaction")
-data class MyTransactionEntity(
+data class TransactionEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String = "",
     val amount: Double = 0.0,

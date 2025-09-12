@@ -1,10 +1,10 @@
 package com.touhidapps.room.data.mapper
 
-import com.touhidapps.room.data.datasource.local.db.entity.MyTransactionEntity
-import com.touhidapps.room.domain.model.MyTransaction
+import com.touhidapps.room.data.datasource.local.db.entity.TransactionEntity
+import com.touhidapps.room.domain.model.Transaction
 
 
-fun MyTransactionEntity.toDomain(): MyTransaction = MyTransaction(
+fun TransactionEntity.toDomain(): Transaction = Transaction(
     id = id,
     title = title,
     amount = amount,
@@ -14,8 +14,8 @@ fun MyTransactionEntity.toDomain(): MyTransaction = MyTransaction(
 )
 
 //Use Entity for DB, Dto for network. for postfix and also for mapping toDto/toEntity
-fun MyTransaction.toEntity(): MyTransactionEntity {
-    return MyTransactionEntity(
+fun Transaction.toEntity(): TransactionEntity {
+    return TransactionEntity(
         id = id,
         title = title,
         amount = amount,

@@ -1,22 +1,22 @@
 package com.touhidapps.room.domain.usecase
 
-import com.touhidapps.room.domain.model.MyTransaction
+import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.domain.repo.TransactionRepository
 
 class TransactionGetAllUseCase(private val repository: TransactionRepository) {
 
-    suspend operator fun invoke(): List<MyTransaction> = repository.getAll()
+    suspend operator fun invoke(): List<Transaction> = repository.getAll()
 
 }
 
 class TransactionUpsertUseCase(private val repository: TransactionRepository) {
 
-    suspend operator fun invoke(myTransaction: MyTransaction): Boolean = repository.upsert(myTransaction)
+    suspend operator fun invoke(transaction: Transaction): Boolean = repository.upsert(transaction)
 
 }
 
 class TransactionDeleteUseCase(private val repository: TransactionRepository) {
 
-    suspend operator fun invoke(myTransaction: MyTransaction): Boolean = repository.delete(myTransaction)
+    suspend operator fun invoke(transaction: Transaction): Boolean = repository.delete(transaction)
 
 }
