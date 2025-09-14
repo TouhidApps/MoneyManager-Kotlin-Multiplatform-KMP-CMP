@@ -4,6 +4,9 @@
 
 ## Screenshots:
 
+### Project Structure with Clean Architecture, MVI, DI:
+![Clean Architecture](https://raw.githubusercontent.com/TouhidApps/MoneyManager-KMP-Room-Koin-MVVM/refs/heads/main/screenshots/clean_arch.png)
+
 ### Android:
 ![Android_Screenshot](https://raw.githubusercontent.com/TouhidApps/MoneyManager-KMP-Room-Koin-MVVM/refs/heads/main/screenshots/ss_android.png)
 

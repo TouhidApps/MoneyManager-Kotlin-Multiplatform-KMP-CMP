@@ -72,19 +72,19 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-
-            /**
-             * Use latest material3 library to avoid datetime library conflict with dateTimePickerState
-             */
-//            implementation(compose.material3)
-            implementation("org.jetbrains.compose.material3:material3:1.10.0-alpha01")
-
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+
+            /**
+             * Use latest material3 library to avoid datetime library conflict with dateTimePickerState
+             */
+//            implementation(compose.material3)
+            implementation("org.jetbrains.compose.material3:material3:1.10.0-alpha01")
+            
             // Mark 2
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
