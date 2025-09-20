@@ -16,7 +16,6 @@ object DbFactoryAndroid: RoomDatabaseConstructor<AppDatabase> {
         appContext = context.applicationContext
     }
 
-
     override fun initialize(): AppDatabase {
 
         if (!::appContext.isInitialized) {
