@@ -36,15 +36,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.touhidapps.room.domain.model.Transaction
-import com.touhidapps.room.presentation.common.SharedContract
-import com.touhidapps.room.presentation.common.SharedViewModel
+import com.touhidapps.room.presentation.common.CommonActions
+import com.touhidapps.room.presentation.common.CommonContract
+import com.touhidapps.room.presentation.common.CommonEvents
+import com.touhidapps.room.presentation.common.CommonViewModel
 import com.touhidapps.room.presentation.home.HomeScreen
 import com.touhidapps.room.utils.formatMillisDateOnly
 import com.touhidapps.room.utils.roundToFourDecimals
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun App(sharedContract: SharedContract = koinViewModel<SharedViewModel>()) {
+fun App(commonContract: CommonContract = koinViewModel<CommonViewModel>()) {
 
     MaterialTheme {
 
@@ -52,8 +54,12 @@ fun App(sharedContract: SharedContract = koinViewModel<SharedViewModel>()) {
 
         // Collect snackbar messages
         LaunchedEffect(Unit) {
-            sharedContract.snackbarMessage.collect { message ->
-                snackBarHostState.showSnackbar(message)
+            commonContract.actions.collect { action ->
+                when (action) {
+                    is CommonActions.ShowSnackbar -> {
+                        snackBarHostState.showSnackbar(action.message)
+                    }
+                }
             }
         }
 
@@ -68,7 +74,7 @@ fun App(sharedContract: SharedContract = koinViewModel<SharedViewModel>()) {
             ) {
 
                 HomeScreen(
-                    sharedContract = sharedContract,
+                    commonContract = commonContract,
                 )
 
                 // Place snackbar at the TOP

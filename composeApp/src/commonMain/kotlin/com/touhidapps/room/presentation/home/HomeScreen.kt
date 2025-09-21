@@ -54,10 +54,11 @@ import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
-import com.touhidapps.room.presentation.common.SharedContract
-import com.touhidapps.room.presentation.common.SharedViewModel
+import com.touhidapps.room.presentation.common.CommonContract
+import com.touhidapps.room.presentation.common.CommonViewModel
 import com.touhidapps.room.presentation.component.CustomAlertDialog
 import com.touhidapps.room.data.repo.TransactionRepositoryImpl
+import com.touhidapps.room.presentation.common.CommonEvents
 import com.touhidapps.room.utils.formatMillisDateOnly
 import com.touhidapps.room.utils.getCurrentTimeMillis
 import com.touhidapps.room.utils.todayEndOfDayMillis
@@ -70,7 +71,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    sharedContract: SharedContract = koinViewModel<SharedViewModel>(),
+    commonContract: CommonContract = koinViewModel<CommonViewModel>(),
     homeContract: HomeContract = koinViewModel<TransactionViewModel>() // no need to use HomeViewModel instead of use homeContract
 ) {
 
@@ -113,15 +114,13 @@ fun HomeScreen(
                 }
         }
 
-
         launch {
             homeContract.actions.collect { action ->
                 when (action) {
-
                     is HomeActions.ShowSnackbar -> {
-                        sharedContract.showSnackbar(action.message)
+                        // forward to common VM
+                        commonContract.onEvent(CommonEvents.ShowSnackbar(action.message))
                     }
-
                 }
             }
         }
@@ -332,7 +331,7 @@ fun HomeScreen(
 fun HomeScreenPreview() {
 
     HomeScreen(
-        sharedContract = SharedViewModel(),
+        commonContract = CommonViewModel(),
         homeContract = TransactionViewModel(
 
             transactionUpsertUseCase = TransactionUpsertUseCase(

@@ -5,9 +5,9 @@ import com.touhidapps.room.domain.repo.TransactionRepository
 import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
-import com.touhidapps.room.presentation.common.SharedContract
+import com.touhidapps.room.presentation.common.CommonContract
 import com.touhidapps.room.data.repo.TransactionRepositoryImpl
-import com.touhidapps.room.presentation.common.SharedViewModel
+import com.touhidapps.room.presentation.common.CommonViewModel
 import com.touhidapps.room.presentation.home.HomeContract
 import com.touhidapps.room.presentation.home.TransactionViewModel
 import org.koin.core.module.Module
@@ -26,8 +26,8 @@ val appModule: Module = module {
     factory { TransactionUpsertUseCase(get()) }
     factory { TransactionDeleteUseCase(get()) }
 
-    viewModel { SharedViewModel() }
-    single<SharedContract> { get<SharedViewModel>() } // app-wide singleton
+    viewModel { CommonViewModel() }
+    single<CommonContract> { get<CommonViewModel>() } // app-wide singleton
 
 //    viewModel { TransactionViewModel(get(), get(), get()) }
 //
