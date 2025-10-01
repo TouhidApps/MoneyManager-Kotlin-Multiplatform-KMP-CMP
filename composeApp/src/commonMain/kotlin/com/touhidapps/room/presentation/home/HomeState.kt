@@ -1,19 +1,15 @@
 package com.touhidapps.room.presentation.home
 
 import com.touhidapps.room.domain.model.Transaction
-import com.touhidapps.room.utils.getCurrentTimeMillis
+import com.touhidapps.room.utils.endOfTodayMillis
 
 data class HomeState(
     val isLoading: Boolean = false,
-
     val transactions: List<Transaction> = emptyList(),
-    val upsert: Boolean = false,
-    val delete: Boolean = false,
 
     val title: String = "",
     val amount: String = "",
     val isIncome: Boolean = false,
-    val selectedDate: Long = getCurrentTimeMillis(),
+    val selectedDate: Long = endOfTodayMillis(),
     val itemIdForUpdate: Int? = null,
-    val showDataPicker: Boolean = false
 )

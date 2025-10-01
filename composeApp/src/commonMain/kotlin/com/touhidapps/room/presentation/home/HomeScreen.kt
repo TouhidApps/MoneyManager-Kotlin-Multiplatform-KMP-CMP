@@ -2,6 +2,7 @@ package com.touhidapps.room.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +21,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -60,8 +63,7 @@ import com.touhidapps.room.presentation.component.CustomAlertDialog
 import com.touhidapps.room.data.repo.TransactionRepositoryImpl
 import com.touhidapps.room.presentation.common.CommonEvents
 import com.touhidapps.room.utils.formatMillisDateOnly
-import com.touhidapps.room.utils.getCurrentTimeMillis
-import com.touhidapps.room.utils.todayEndOfDayMillis
+import com.touhidapps.room.utils.endOfTodayMillis
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -75,7 +77,7 @@ fun HomeScreen(
     homeContract: HomeContract = koinViewModel<TransactionViewModel>() // no need to use HomeViewModel instead of use homeContract
 ) {
 
-    val state by homeContract.homeState.collectAsStateWithLifecycle() // collectAsState() for reactive recomposition.
+    val state by homeContract.state.collectAsStateWithLifecycle() // collectAsState() for reactive recomposition.
 
     // The dialog is purely a UI concern.
     // It doesn’t belong to your domain/business logic — the user can cancel anytime without affecting data.
@@ -84,7 +86,7 @@ fun HomeScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
 
-    val todayEndMillis by remember { mutableStateOf(todayEndOfDayMillis()) }
+    val todayEndMillis by remember { mutableStateOf(endOfTodayMillis()) }
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = todayEndMillis, // or todayStart depending on UX
@@ -99,11 +101,11 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
 
         // Set default date once
-        homeContract.onEvent(HomeEvents.ChangeDate(getCurrentTimeMillis()))
+        homeContract.onEvent(HomeEvents.ChangeDate(endOfTodayMillis()))
 
         // Collect upsert
         launch {
-            homeContract.homeState
+            homeContract.state
                 .distinctUntilChangedBy { it.selectedDate } // to avoid multiple calls when isLoading is false multiple times.
                 .map { it.selectedDate }
                 .collect { selectedDate ->
@@ -217,7 +219,7 @@ fun HomeScreen(
             Icon(Icons.Default.DateRange, contentDescription = "Pick Date")
             Spacer(Modifier.width(8.dp))
             Text(
-                text = formatMillisDateOnly(state.selectedDate ?: getCurrentTimeMillis()),
+                text = formatMillisDateOnly(state.selectedDate ?: endOfTodayMillis()),
                 fontWeight = FontWeight.Medium
             )
         }
@@ -256,7 +258,7 @@ fun HomeScreen(
             Button(
                 onClick = {
 
-                    homeContract.onEvent(HomeEvents.SaveTransaction)
+                    homeContract.onEvent(HomeEvents.SaveButtonClick)
 
                 },
                 modifier = Modifier.wrapContentHeight().weight(1F),
@@ -272,9 +274,9 @@ fun HomeScreen(
             if (state.itemIdForUpdate != null) {
                 Button(onClick = {
 
-                    homeContract.onEvent(HomeEvents.CancelUpdate)
+                    homeContract.onEvent(HomeEvents.CancelUpdateClick)
 
-                    datePickerState.selectedDateMillis = getCurrentTimeMillis()
+                    datePickerState.selectedDateMillis = endOfTodayMillis()
                     datePickerState.displayMode = DisplayMode.Picker // to show current selected date page
 
                 }) {
@@ -286,23 +288,40 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Transactions List
-        TransactionList(
-            items = homeContract.homeState.value.transactions,
-            onEdit = { transaction ->
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
 
-                homeContract.onEvent(HomeEvents.EditTransaction(transaction))
+            // Transactions List
+            TransactionList(
+                items = homeContract.state.value.transactions,
+                onEdit = { transaction ->
+
+                    homeContract.onEvent(HomeEvents.EditItemButtonClick(transaction))
 
 
-                datePickerState.displayMode = DisplayMode.Picker // To show current selected date page
+                    datePickerState.displayMode = DisplayMode.Picker // To show current selected date page
 
-            },
-            onDelete = {
+                },
+                onDelete = {
 
-                showDeleteDialog = it
+                    showDeleteDialog = it
 
-            },
-        )
+                },
+            )
+
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(50.dp), // adjust size
+                    color = MaterialTheme.colorScheme.primary, // or your custom color
+                    strokeWidth = 4.dp
+                )
+            }
+
+        }
+
+
 
         if (showDeleteDialog != null) {
             CustomAlertDialog(
@@ -311,7 +330,7 @@ fun HomeScreen(
                     showDeleteDialog = null
                 },
                 onConfirm = {
-                    homeContract.onEvent(HomeEvents.ItemDeleteYes(showDeleteDialog))
+                    homeContract.onEvent(HomeEvents.DeleteItemYesClick(showDeleteDialog))
                     showDeleteDialog = null
                 },
                 onCancel = {
@@ -360,8 +379,8 @@ class FakeTransactionDao : TransactionDao {
 
     override suspend fun getAllTransaction(): List<TransactionEntity> {
         return listOf(
-            TransactionEntity(id = 1, title = "Salary", amount = 5.0, isIncome = true, transactionTimeStamp = getCurrentTimeMillis(), entryTimeStamp = ""),
-            TransactionEntity(id = 2, title = "Groceries", amount = 20.0, isIncome = false, transactionTimeStamp = getCurrentTimeMillis(), entryTimeStamp = "")
+            TransactionEntity(id = 1, title = "Salary", amount = 5.0, isIncome = true, transactionTimeStamp = endOfTodayMillis(), entryTimeStamp = ""),
+            TransactionEntity(id = 2, title = "Groceries", amount = 20.0, isIncome = false, transactionTimeStamp = endOfTodayMillis(), entryTimeStamp = "")
         )
     }
 

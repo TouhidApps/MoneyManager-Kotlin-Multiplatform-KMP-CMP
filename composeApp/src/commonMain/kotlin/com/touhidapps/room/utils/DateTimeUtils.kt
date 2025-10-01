@@ -11,18 +11,11 @@ import kotlin.time.Instant
 
 
 @OptIn(ExperimentalTime::class)
-fun todayEndOfDayMillis(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long {
+fun endOfTodayMillis(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long {
     val now = Clock.System.now()
     val today = now.toLocalDateTime(timeZone).date
     val tomorrowStart = today.plus(1, DateTimeUnit.DAY).atStartOfDayIn(timeZone)
     return tomorrowStart.toEpochMilliseconds() - 1
-}
-
-@OptIn(ExperimentalTime::class)
-fun getCurrentTimeMillis(): Long {
-//    val currentMillis: Long = Clock.System.now().toEpochMilliseconds()
-//    return currentMillis
-    return todayEndOfDayMillis()
 }
 
 @OptIn(ExperimentalTime::class)
@@ -39,9 +32,9 @@ fun formatMillisDateOnly(millis: Long): String {
 }
 
 @OptIn(ExperimentalTime::class)
-fun formatMillisWithTime(millis: Long): String {
-    val dateTime = Instant.fromEpochMilliseconds(millis)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
+fun formatMillisWithTime(): String {
+    val currentMillis: Long = Clock.System.now().toEpochMilliseconds()
+    val dateTime = Instant.fromEpochMilliseconds(currentMillis).toLocalDateTime(TimeZone.currentSystemDefault())
 
     val hour = if (dateTime.hour % 12 == 0) 12 else dateTime.hour % 12
     val minute = dateTime.minute.toString().padStart(2, '0')

@@ -7,6 +7,7 @@ import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
 import com.touhidapps.room.utils.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +23,13 @@ class TransactionViewModel(
 ): BaseViewModel(), HomeContract {
 
     private val _homeState = MutableStateFlow(HomeState())
-    override val homeState: StateFlow<HomeState> = _homeState.asStateFlow()
+    override val state: StateFlow<HomeState> = _homeState.asStateFlow()
 
+    /**
+     * @param replay = 0: No previously emitted values will be replayed to new collectors after config change
+     * @param extraBufferCapacity = 1 makes sure at least one action can be sent even if the collector isn’t ready yet,
+     * so UI won’t miss the event.
+     */
     private val _actions = MutableSharedFlow<HomeActions>(replay = 0, extraBufferCapacity = 1)
     override val actions: Flow<HomeActions> = _actions
 
@@ -35,7 +41,7 @@ class TransactionViewModel(
 
         when(event) {
 
-            is HomeEvents.EditTransaction -> {
+            is HomeEvents.EditItemButtonClick -> {
 
                 _homeState.update {
                     it.copy(
@@ -43,23 +49,13 @@ class TransactionViewModel(
                         amount = "${event.transaction?.amount ?: 0.0}",
                         itemIdForUpdate = event.transaction?.id,
                         isIncome = event.transaction?.isIncome ?: false,
-                        selectedDate = event.transaction?.transactionTimeStamp ?: getCurrentTimeMillis(),
+                        selectedDate = event.transaction?.transactionTimeStamp ?: endOfTodayMillis(),
                     )
                 }
 
             }
-            HomeEvents.LoadAllTransactions -> {
 
-                getAllTransactions()
-
-            }
-            HomeEvents.SaveTransaction -> {
-
-                saveTransaction()
-
-            }
-
-            HomeEvents.CancelUpdate -> {
+            HomeEvents.CancelUpdateClick -> {
 
                 _homeState.update {
                     it.copy(
@@ -67,7 +63,7 @@ class TransactionViewModel(
                         amount = "",
                         itemIdForUpdate = null,
                         isIncome = false,
-                        selectedDate = getCurrentTimeMillis(),
+                        selectedDate = endOfTodayMillis(),
                     )
                 }
 
@@ -89,7 +85,19 @@ class TransactionViewModel(
                 _homeState.update { it.copy(selectedDate = event.date) }
             }
 
-            is HomeEvents.ItemDeleteYes -> {
+            HomeEvents.LoadAllTransactions -> {
+
+                getAllTransactions()
+
+            }
+
+            HomeEvents.SaveButtonClick -> {
+
+                saveTransaction()
+
+            }
+
+            is HomeEvents.DeleteItemYesClick -> {
 
                 deleteTransaction(event.transaction)
 
@@ -121,16 +129,17 @@ class TransactionViewModel(
                 title = _homeState.value.title ?: "",
                 amount = _homeState.value.amount?.toDouble() ?: 0.0,
                 isIncome = _homeState.value.isIncome,
-                transactionTimeStamp = _homeState.value.selectedDate ?: getCurrentTimeMillis(),
-                entryTimeStamp = formatMillisWithTime(_homeState.value.selectedDate ?: getCurrentTimeMillis())
+                transactionTimeStamp = _homeState.value.selectedDate,
+                entryTimeStamp = formatMillisWithTime()
             )
 
             _homeState.update { it.copy(isLoading = true) }
             val ok = transactionUpsertUseCase(transaction) // suspend Boolean
+            delay(1000)
             _homeState.update { it.copy(isLoading = false) }
             _actions.emit(HomeActions.ShowSnackbar(if (ok) "Saved ✅" else "Failed ❌"))
             if (_homeState.value.itemIdForUpdate != null) { // when update data
-                _homeState.update { it.copy(selectedDate = getCurrentTimeMillis()) }
+                _homeState.update { it.copy(selectedDate = endOfTodayMillis()) }
             }
             if (ok) onEvent(HomeEvents.LoadAllTransactions) // Refresh data
 
@@ -145,6 +154,7 @@ class TransactionViewModel(
 
             _homeState.update { it.copy(isLoading = true, title = "", amount = "", itemIdForUpdate = null) }
             val res = transactionGetAllUseCase() // suspend Boolean
+            delay(1000)
             _homeState.update { it.copy(isLoading = false, transactions = res) }
 
         }
@@ -160,6 +170,7 @@ class TransactionViewModel(
             transaction?.let {
                 _homeState.update { it.copy(isLoading = true) }
                 val res = transactionDeleteUseCase(it)
+                delay(1000)
                 _homeState.update { it.copy(isLoading = false) }
                 _actions.emit(HomeActions.ShowSnackbar(if(res) "Transaction deleted successfully" else "⚠️ Something went wrong"))
 
