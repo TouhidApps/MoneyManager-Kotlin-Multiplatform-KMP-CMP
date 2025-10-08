@@ -32,7 +32,7 @@ fun formatMillisDateOnly(millis: Long): String {
 }
 
 @OptIn(ExperimentalTime::class)
-fun formatMillisWithTime(): String {
+fun formatMillisWithTimeNow(): String {
     val currentMillis: Long = Clock.System.now().toEpochMilliseconds()
     val dateTime = Instant.fromEpochMilliseconds(currentMillis).toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -46,5 +46,5 @@ fun formatMillisWithTime(): String {
         .take(3) // → "Jan"
     val year = dateTime.year
 
-    return "$hour:$minute $amPm $day-$month-$year"
+    return "$hour:$minute $amPm $day-$month-$year" // 00:00 AM 00-Jan-0000
 }

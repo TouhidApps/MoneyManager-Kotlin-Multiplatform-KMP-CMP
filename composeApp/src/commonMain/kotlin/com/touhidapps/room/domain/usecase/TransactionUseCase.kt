@@ -1,5 +1,6 @@
 package com.touhidapps.room.domain.usecase
 
+import com.touhidapps.room.domain.model.Summary
 import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.domain.repo.TransactionRepository
 
@@ -37,5 +38,11 @@ class TransactionGetAllUseCase(private val repository: TransactionRepository) {
 class TransactionDeleteUseCase(private val repository: TransactionRepository) {
 
     suspend operator fun invoke(transaction: Transaction): Boolean = repository.delete(transaction)
+
+}
+
+class TransactionSummaryUseCase(private val repository: TransactionRepository) {
+
+    suspend operator fun invoke(): Summary = repository.getSummary()
 
 }

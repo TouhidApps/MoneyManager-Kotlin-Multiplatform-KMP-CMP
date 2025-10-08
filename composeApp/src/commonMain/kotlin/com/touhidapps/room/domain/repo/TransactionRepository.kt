@@ -1,5 +1,6 @@
 package com.touhidapps.room.domain.repo
 
+import com.touhidapps.room.domain.model.Summary
 import com.touhidapps.room.domain.model.Transaction
 
 /**
@@ -11,6 +12,7 @@ interface TransactionRepository {
     suspend fun getAll(): List<Transaction>
 
     suspend fun delete(transaction: Transaction): Boolean
+    suspend fun getSummary(): Summary
 
 }
 

@@ -1,7 +1,9 @@
 package com.touhidapps.room.presentation.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,20 +15,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -50,8 +60,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.touhidapps.room.TransactionList
 import com.touhidapps.room.data.datasource.local.db.dao.TransactionDao
+import com.touhidapps.room.data.datasource.local.db.entity.SummaryEntity
 import com.touhidapps.room.data.datasource.local.db.entity.TransactionEntity
 import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
@@ -61,9 +71,12 @@ import com.touhidapps.room.presentation.common.CommonContract
 import com.touhidapps.room.presentation.common.CommonViewModel
 import com.touhidapps.room.presentation.component.CustomAlertDialog
 import com.touhidapps.room.data.repo.TransactionRepositoryImpl
+import com.touhidapps.room.domain.model.Summary
+import com.touhidapps.room.domain.usecase.TransactionSummaryUseCase
 import com.touhidapps.room.presentation.common.CommonEvents
 import com.touhidapps.room.utils.formatMillisDateOnly
 import com.touhidapps.room.utils.endOfTodayMillis
+import com.touhidapps.room.utils.roundToTwoDecimals
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -296,10 +309,10 @@ fun HomeScreen(
             // Transactions List
             TransactionList(
                 items = homeContract.state.value.transactions,
+                summary = homeContract.state.value.summary,
                 onEdit = { transaction ->
 
                     homeContract.onEvent(HomeEvents.EditItemButtonClick(transaction))
-
 
                     datePickerState.displayMode = DisplayMode.Picker // To show current selected date page
 
@@ -343,6 +356,113 @@ fun HomeScreen(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun TransactionList(
+    items: List<Transaction>,
+    summary: Summary?,
+    onEdit: (Transaction) -> Unit,
+    onDelete: (Transaction) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Sticky Header with Summary
+        stickyHeader {
+
+            Column(
+                modifier = Modifier.fillMaxWidth().background(Color(0xFF37474F)) // Dark gray-blue
+                    .padding(12.dp)
+            ) {
+                Text(
+                    text = "Total Income: ${summary?.totalIncome?.roundToTwoDecimals() ?: 0}",
+                    color = Color(0xFF4CAF50), // Green
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Total Expense: (${summary?.totalExpense?.roundToTwoDecimals() ?: 0})",
+                    color = Color(0xFFF44336), // Red
+                    fontWeight = FontWeight.Bold
+                )
+                HorizontalDivider(
+                    color = Color.White.copy(alpha = 0.3f),
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+                Text(
+                    text = "Remaining Balance: ${summary?.balance?.roundToTwoDecimals() ?: 0}",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        // List Items
+        items(items.toList().reversed()) { item ->
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+
+                        Text(
+                            text = item.title,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF212121)
+                        )
+                        Text(
+                            text = "${item.amount.roundToTwoDecimals()} Tk.",
+                            fontSize = 14.sp,
+                            color = if (item.isIncome) Color(0xFF4CAF50) else Color(0xFFF44336),
+                            fontWeight = FontWeight.Medium
+                        )
+                        Row {
+                            Text(
+                                text = if (item.isIncome) "Income" else "Expense",
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                            Text(
+                                text = if (item.transactionTimeStamp != 0L) " at ${formatMillisDateOnly(item.transactionTimeStamp)}" else "",
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+
+                    // Edit & Delete Buttons
+                    Row {
+                        IconButton(onClick = { onEdit(item) }) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit",
+                                tint = Color(0xFF1976D2) // Blue
+                            )
+                        }
+                        IconButton(onClick = { onDelete(item) }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = Color(0xFFD32F2F) // Red
+                            )
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
 
 
 @Preview
@@ -368,7 +488,11 @@ fun HomeScreenPreview() {
                     FakeTransactionDao()
                 )
             ),
-
+            transactionSummaryUseCase = TransactionSummaryUseCase(
+                TransactionRepositoryImpl(
+                    FakeTransactionDao()
+                )
+            ),
         )
     )
 
@@ -386,4 +510,8 @@ class FakeTransactionDao : TransactionDao {
 
     override suspend fun deleteAll() {}
     override suspend fun delete(transaction: TransactionEntity) {}
+    override suspend fun getSummary(): SummaryEntity {
+        return SummaryEntity(0.0,0.0,0.0)
+    }
+
 }

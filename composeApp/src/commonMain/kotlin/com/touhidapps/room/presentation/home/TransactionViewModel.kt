@@ -5,6 +5,7 @@ import com.touhidapps.room.base.BaseViewModel
 import com.touhidapps.room.domain.model.Transaction
 import com.touhidapps.room.domain.usecase.TransactionDeleteUseCase
 import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
+import com.touhidapps.room.domain.usecase.TransactionSummaryUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
 import com.touhidapps.room.utils.*
 import kotlinx.coroutines.delay
@@ -20,6 +21,7 @@ class TransactionViewModel(
     private val transactionUpsertUseCase: TransactionUpsertUseCase,
     private val transactionGetAllUseCase: TransactionGetAllUseCase,
     private val transactionDeleteUseCase: TransactionDeleteUseCase,
+    private val transactionSummaryUseCase: TransactionSummaryUseCase
 ): BaseViewModel(), HomeContract {
 
     private val _homeState = MutableStateFlow(HomeState())
@@ -130,7 +132,7 @@ class TransactionViewModel(
                 amount = _homeState.value.amount?.toDouble() ?: 0.0,
                 isIncome = _homeState.value.isIncome,
                 transactionTimeStamp = _homeState.value.selectedDate,
-                entryTimeStamp = formatMillisWithTime()
+                entryTimeStamp = formatMillisWithTimeNow()
             )
 
             _homeState.update { it.copy(isLoading = true) }
@@ -155,7 +157,13 @@ class TransactionViewModel(
             _homeState.update { it.copy(isLoading = true, title = "", amount = "", itemIdForUpdate = null) }
             val res = transactionGetAllUseCase() // suspend Boolean
             delay(1000)
-            _homeState.update { it.copy(isLoading = false, transactions = res) }
+
+
+            val summary = transactionSummaryUseCase()
+
+            _homeState.update { it.copy(isLoading = false, transactions = res, summary = summary) }
+
+
 
         }
 

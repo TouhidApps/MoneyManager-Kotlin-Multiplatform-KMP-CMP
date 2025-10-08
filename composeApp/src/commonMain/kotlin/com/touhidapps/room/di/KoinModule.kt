@@ -7,6 +7,7 @@ import com.touhidapps.room.domain.usecase.TransactionGetAllUseCase
 import com.touhidapps.room.domain.usecase.TransactionUpsertUseCase
 import com.touhidapps.room.presentation.common.CommonContract
 import com.touhidapps.room.data.repo.TransactionRepositoryImpl
+import com.touhidapps.room.domain.usecase.TransactionSummaryUseCase
 import com.touhidapps.room.presentation.common.CommonViewModel
 import com.touhidapps.room.presentation.home.HomeContract
 import com.touhidapps.room.presentation.home.TransactionViewModel
@@ -25,6 +26,7 @@ val appModule: Module = module {
     factory { TransactionGetAllUseCase(get()) }
     factory { TransactionUpsertUseCase(get()) }
     factory { TransactionDeleteUseCase(get()) }
+    factory { TransactionSummaryUseCase(get()) }
 
     viewModel { CommonViewModel() }
     single<CommonContract> { get<CommonViewModel>() } // app-wide singleton
@@ -33,7 +35,7 @@ val appModule: Module = module {
 //
 //    factory<HomeContract> { get<TransactionViewModel>() } // while using no need koinViewModel<TransactionViewModel>() only use get()
 
-    viewModel { TransactionViewModel(get(), get(), get()) } bind HomeContract::class
+    viewModel { TransactionViewModel(get(), get(), get(), get()) } bind HomeContract::class
 
 
 
