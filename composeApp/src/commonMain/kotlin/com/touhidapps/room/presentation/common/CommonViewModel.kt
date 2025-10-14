@@ -1,13 +1,13 @@
 package com.touhidapps.room.presentation.common
 
-import androidx.lifecycle.ViewModel
+import com.touhidapps.room.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class CommonViewModel: ViewModel(), CommonContract {
+class CommonViewModel: BaseViewModel(), CommonContract {
 
     private val _state = MutableStateFlow(CommonState())
     override val state: StateFlow<CommonState> = _state.asStateFlow()
